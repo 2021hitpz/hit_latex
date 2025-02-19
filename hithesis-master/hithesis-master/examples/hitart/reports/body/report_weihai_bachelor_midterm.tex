@@ -1,7 +1,79 @@
 \section{论文工作是否按预期进行、目前已完成的研究工作及结果}
 \subsection{论文工作是否按预期进行}
 （正文  宋体小4号字，多倍行距值1.25，段前0行，段后0行。字数3000字以上。具体的撰写要符合哈尔滨工业大学本科生毕业论文撰写规范的书写规定。）
+本论文工作总体按照预期计划稳步推进，目前完成的主要工作如下：
+\begin{itemize}
+    \item 学习了特征提取，特征匹配，非线性优化等基础知识，熟悉了目前导航算法的整体流程与具体实现
+    \item 在仿真环境下成功基于公开数据集以及自建数据集上运行了目前导航算法
+    \item 分析了目前导航算法的性能，并与改进后的导航算法进行了性能对比
+\end{itemize}
+
 \subsection{目前已完成的研究工作及结果}
+\subsubsection{导航算法介绍}
+\begin{itemize}
+    \item 特征提取
+    
+    特征提取选择的是Shi-Tomasi角点提取算法，该算法是Harris角点提取算法的改进，能够提取出更多的角点，并且计算速度更快\cite{shi1994good}。下面我们先介绍Harris角点提取算法，然后介绍Shi-Tomasi角点提取算法。
+    
+    Harris角点提取算法：
+    
+    Harris角点提取算法是一种基于图像灰度值的角点提取算法，其基本思想是：在图像中寻找那些在各个方向上灰度变化较大的点，这些点即为角点。
+    Harris角点提取分为三步：
+    \begin{enumerate}
+        \item 计算窗口内部的像素值变化量\(\mathrm{E(u,v)}\)
+        
+        让一个窗口的中心位于灰度图像的一个位置$(x,y)$，这个位置的像素灰度值为$I(x,y)$，如果这个窗口分别向 x 和 y 方向移动一个小的位移u和v，到一个新的位置$(x+u,y+v)$，这个位置的像素灰度值就是$I(x+u,y+v)$。
+        $[I(x+u,y+v)-I(x,y)]$就是窗口移动引起的灰度值的变化值。
+        设$w(x,y)$为位置$(x,y)$处的窗口函数，表示窗口内各像素的权重，最简单的就是把窗口内所有
+        像素的权重都设为1。假设窗口函数为一个高斯函数，则越靠近窗口中心，权重越大，反之则越小。
+        在高斯函数的假设下，窗口在各个方向上移动$(u,v)$所造成的像素灰度值的变化量公式如下：
+
+        \[E(u,v)=\sum_{(x,y)}w(x,y)\times[I(x+u,y+v)-I(x,y)]^2\]
+        
+        \begin{align*}
+        \text{经过泰勒展开，变换得到最终的形式：} \\
+        E(u,v) &\approx [u,v]M\begin{bmatrix} u \\ v \end{bmatrix} \\
+        \text{其中矩阵}~M &=\sum_{(x,y)}w(x,y)
+        \begin{bmatrix}
+        I_x^2 & I_xI_y \\
+        I_xI_y & I_y^2
+        \end{bmatrix} \\
+        &= R^{-1}
+        \begin{bmatrix}
+        \lambda_1 & 0 \\
+        0 & \lambda_2
+        \end{bmatrix}R
+        \end{align*}
+
+        \item 计算Harris角点响应\(\mathrm{R}\) \\
+        借助上面的\(\mathrm{E(u,v)}\)，计算每个窗口对应的得分(角点响应函数R):
+        \[R=\det(M)-k(\operatorname{trace}(M))^2\]
+        
+        其中$\det(M)=\lambda_1\lambda_2$是矩阵的行列式，$\operatorname{trace}(M)=\lambda_1+\lambda_2$是矩阵的迹。
+        $\lambda_1$ 和 $\lambda_2$是矩阵M的特征值，$k$是一个经验常数，在范围 (0.04,0.06)之间。
+        窗口类型与 $\lambda_1$ 和$\lambda_2$ 关系如下表:\\
+        \begin{table}[htbp]
+            \centering
+            \caption{窗口类型与$\lambda_1$和$\lambda_2$的关系}
+            \begin{tabular}{cc}
+            \toprule
+            窗口类型 & $\lambda_1$和$\lambda_2$的特征 \\
+            \midrule
+            平面区域 & $\lambda_1 \approx \lambda_2 \approx 0$ \\
+            边缘 & $\lambda_1 \gg \lambda_2$ 或 $\lambda_2 \gg \lambda_1$ \\
+            角点 & $\lambda_1$和$\lambda_2$都较大且近似相等 \\
+            \bottomrule
+            \end{tabular}
+        \end{table}
+        Shi-Tomasi角点是Harris角点，它将响应函数改为如下形式：
+
+        \[R=\min(\lambda_1,\lambda_2)\]
+\end{enumerate}
+   
+        \item 非线性优化
+\end{itemize}
+
+
 \section{后期拟完成的研究工作及进度安排}
 \subsection{后期拟完成的研究工作}
 \subsection{后期进度安排}
